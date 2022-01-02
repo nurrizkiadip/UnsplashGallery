@@ -28,17 +28,17 @@ class DetailViewModelFactory(
 
   companion object {
     @Volatile
-    private var INSTANCE: DetailViewModelFactory? = null
+    private var instance: DetailViewModelFactory? = null
 
     fun createFactory(
       activity: Activity,
     ): DetailViewModelFactory {
 	    val context = activity.application
 
-      return INSTANCE ?: synchronized(this) {
-        INSTANCE ?: DetailViewModelFactory(
+      return instance ?: synchronized(this) {
+        instance ?: DetailViewModelFactory(
           Injection.provideRepository(context)
-        ).apply { INSTANCE = this }
+        ).apply { instance = this }
       }
     }
   }
