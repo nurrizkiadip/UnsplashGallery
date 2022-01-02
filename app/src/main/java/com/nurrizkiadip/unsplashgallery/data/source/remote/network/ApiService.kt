@@ -7,14 +7,14 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("photos")
-    suspend fun getPhotos(
-        @Query("client_id") clientId: String = CLIENT_ID,
-    ): List<PhotoResponse>
+	@GET("photos")
+	suspend fun getPhotos(
+		@Query("client_id") clientId: String = CLIENT_ID,
+	): List<PhotoResponse>
 
-    @GET("photos/{id}")
-    suspend fun getPhotoById(
-        @Path("id") id: String,
-        @Query("client_id") clientId: String = CLIENT_ID,
-    ): PhotoResponse
+	@GET("photos/{id}")
+	suspend fun getPhotoById(
+		@Path("id") id: String,
+		@Query("client_id") clientId: String = CLIENT_ID,
+	): PhotoResponse
 }

@@ -1,6 +1,5 @@
 package com.nurrizkiadip.unsplashgallery.ui.detail
 
-import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nurrizkiadip.unsplashgallery.data.Repository
@@ -8,7 +7,7 @@ import com.nurrizkiadip.unsplashgallery.di.Injection
 import java.lang.reflect.InvocationTargetException
 
 class DetailViewModelFactory(
-  private val mRepository: Repository?,
+	private val mRepository: Repository?
 ) : ViewModelProvider.Factory {
 
   override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -29,15 +28,10 @@ class DetailViewModelFactory(
   companion object {
     @Volatile
     private var instance: DetailViewModelFactory? = null
-
-    fun createFactory(
-      activity: Activity,
-    ): DetailViewModelFactory {
-	    val context = activity.application
-
+    fun createFactory(): DetailViewModelFactory {
       return instance ?: synchronized(this) {
         instance ?: DetailViewModelFactory(
-          Injection.provideRepository(context)
+          Injection.provideRepository()
         ).apply { instance = this }
       }
     }

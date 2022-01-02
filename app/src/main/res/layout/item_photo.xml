@@ -31,13 +31,14 @@
       android:layout_gravity="start|bottom"
       android:layout_margin="8dp">
 
-      <de.hdodenhof.circleimageview.CircleImageView
+      <ImageView
         android:id="@+id/profile_image"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:src="@drawable/ic_user"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/user_photo_profile" />
 
       <TextView
         android:id="@+id/name"
@@ -47,9 +48,9 @@
         android:gravity="bottom"
         android:text="@string/user_owner"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
         app:layout_constraintTop_toTopOf="@+id/profile_image"

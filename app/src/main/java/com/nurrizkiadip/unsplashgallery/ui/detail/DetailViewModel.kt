@@ -16,31 +16,31 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
-    private val repository: Repository
+	private val repository: Repository
 ) : ViewModel() {
 
-    val isLoading = MutableStateFlow(false)
-    val photo = MutableStateFlow(Photo("", 0, "", "", User("", "", "", "")))
+	val isLoading = MutableStateFlow(false)
+	val photo = MutableStateFlow(Photo("", 0, "", "", User("", "", "", "")))
 
-    fun getPhotoById(context: Context, id: String) = viewModelScope.launch {
-        repository.getPhotoById(id).collect {
-            when (it) {
-                is SuccessResponse -> {
-                    isLoading.value = false
-                    it.body?.let { data -> photo.value = data }
-                }
-                is ErrorResponse -> {
-                    isLoading.value = false
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
-                is EmptyResponse -> {
-                    isLoading.value = false
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
-                is LoadingResponse -> {
-                    isLoading.value = true
-                }
-            }
-        }
-    }
+	fun getPhotoById(context: Context, id: String) = viewModelScope.launch {
+		repository.getPhotoById(id).collect {
+			when (it) {
+				is SuccessResponse -> {
+					isLoading.value = false
+					it.body?.let { data -> photo.value = data }
+				}
+				is ErrorResponse -> {
+					isLoading.value = false
+					Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+				}
+				is EmptyResponse -> {
+					isLoading.value = false
+					Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+				}
+				is LoadingResponse -> {
+					isLoading.value = true
+				}
+			}
+		}
+	}
 }
