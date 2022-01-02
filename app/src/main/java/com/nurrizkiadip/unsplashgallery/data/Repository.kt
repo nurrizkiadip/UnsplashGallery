@@ -9,16 +9,12 @@ class Repository(
 ) : PhotoDataSource {
 
     override suspend fun getPhotos(): Flow<ApiResponse<List<Photo>>> = remoteData.getPhotos()
-    override suspend fun getPhotoById(id: String): Flow<ApiResponse<Photo>> =
-        remoteData.getPhotoById(id)
+    override suspend fun getPhotoById(id: String): Flow<ApiResponse<Photo>> = remoteData.getPhotoById(id)
 
     companion object {
         @Volatile
         private var instance: Repository? = null
-
-        fun getInstance(
-            remoteData: RemoteDataSource,
-        ): Repository {
+        fun getInstance(remoteData: RemoteDataSource): Repository {
             return instance ?: synchronized(this) {
                 instance ?: Repository(remoteData).apply { instance = this }
             }

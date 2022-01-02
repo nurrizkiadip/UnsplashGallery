@@ -28,17 +28,17 @@ class ListViewModelFactory(
 
     companion object {
         @Volatile
-        private var INSTANCE: ListViewModelFactory? = null
+        private var instance: ListViewModelFactory? = null
 
         fun createFactory(
             activity: Activity,
         ): ListViewModelFactory {
             val context = activity.application
 
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: ListViewModelFactory(
+            return instance ?: synchronized(this) {
+                instance ?: ListViewModelFactory(
                     Injection.provideRepository(context)
-                ).apply { INSTANCE = this }
+                ).apply { instance = this }
             }
         }
     }

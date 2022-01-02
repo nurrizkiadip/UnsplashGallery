@@ -27,10 +27,7 @@ class DetailViewModel(
             when (it) {
                 is SuccessResponse -> {
                     isLoading.value = false
-                    it.body?.let { data ->
-                        println("DataDetail = $data")
-                        photo.value = data
-                    }
+                    it.body?.let { data -> photo.value = data }
                 }
                 is ErrorResponse -> {
                     isLoading.value = false

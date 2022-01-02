@@ -63,8 +63,8 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun obtainViewModel(activity: Activity): DetailViewModel {
-        val factory = ListViewModelFactory.createFactory(activity)
-        return ViewModelProvider(this, factory).get(DetailViewModel::class.java)
+        val factory = DetailViewModelFactory.createFactory(activity)
+        return ViewModelProvider(this, factory)[DetailViewModel::class.java]
     }
 
     companion object {
