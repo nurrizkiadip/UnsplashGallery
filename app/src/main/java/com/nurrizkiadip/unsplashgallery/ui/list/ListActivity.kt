@@ -1,85 +1,65 @@
 package com.nurrizkiadip.unsplashgallery.ui.list
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nurrizkiadip.unsplashgallery.data.source.remote.EmptyResponse
-import com.nurrizkiadip.unsplashgallery.data.source.remote.ErrorResponse
-import com.nurrizkiadip.unsplashgallery.data.source.remote.LoadingResponse
-import com.nurrizkiadip.unsplashgallery.data.source.remote.SuccessResponse
+import com.nurrizkiadip.unsplashgallery.data.Photo
 import com.nurrizkiadip.unsplashgallery.databinding.ActivityListBinding
 import com.nurrizkiadip.unsplashgallery.utils.gone
 import com.nurrizkiadip.unsplashgallery.utils.visible
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class ListActivity : AppCompatActivity() {
-  private lateinit var binding: ActivityListBinding
-  private lateinit var viewModel: ListViewModel
-  private lateinit var photosAdapter: PhotosAdapter
+    private lateinit var binding: ActivityListBinding
+    private lateinit var viewModel: ListViewModel
+    private lateinit var photosAdapter: PhotosAdapter
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    binding = ActivityListBinding.inflate(layoutInflater)
-    setContentView(binding.root)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    viewModel = obtainViewModel(this)
-	  initPhotosAdapter()
-    getPhotos()
-  }
+        viewModel = obtainViewModel(this)
+        initPhotosAdapter()
 
-	private fun initPhotosAdapter() {
-		photosAdapter = PhotosAdapter()
-		binding.rvPhotos.apply {
-			layoutManager = LinearLayoutManager(context)
-			setHasFixedSize(true)
-			adapter = this@ListActivity.photosAdapter
-		}
-	}
-
-	private fun obtainViewModel(activity: Activity): ListViewModel {
-    val factory = ListViewModelFactory.createFactory(activity)
-    return ViewModelProvider(this, factory).get(ListViewModel::class.java)
-  }
-
-  private fun getPhotos() {
-    viewModel.getPhotos().observe(this) {
-      if (it != null) {
-        when (it) {
-          is SuccessResponse -> {
-	          binding.pbList.gone()
-	          binding.tvEmptyList.gone()
-
-	          photosAdapter.setPhotos(it.body)
-          }
-          is ErrorResponse -> {
-	          binding.pbList.gone()
-	          binding.tvEmptyList.gone()
-
-	          showToast(it.message as String)
-          }
-          is EmptyResponse -> {
-	          binding.pbList.gone()
-	          binding.tvEmptyList.text = it.body.toString()
-	          binding.tvEmptyList.visible()
-          }
-          is LoadingResponse -> {
-	          binding.pbList.visible()
-          }
-        }
-      }
+        viewModel.getPhotos(this)
+        populateEmptyView(viewModel.isEmpty)
+        populateLoadingView(viewModel.isLoading)
+        populateEmptyMessage(viewModel.emptyMessage)
+        populatePhotos(viewModel.photos)
     }
-  }
 
-	private fun showToast(msg: String) {
-		Toast.makeText(
-			this, msg, Toast.LENGTH_SHORT
-		).show()
-	}
+    private fun populatePhotos(photos: MutableStateFlow<List<Photo>>) =
+        lifecycleScope.launch { photos.collect { photosAdapter.setPhotos(it) } }
 
-	companion object {
-		val TAG: String = ListActivity::class.java.simpleName
-	}
+    private fun populateEmptyMessage(message: MutableStateFlow<String>) = lifecycleScope.launch {
+        message.collect { if (it.isNotBlank()) binding.tvEmptyList.text = it }
+    }
+
+    private fun populateLoadingView(isLoading: MutableStateFlow<Boolean>) = lifecycleScope.launch {
+        isLoading.collect { loading -> binding.pbList.let { if (loading) it.visible() else it.gone() } }
+    }
+
+    private fun populateEmptyView(isEmpty: MutableStateFlow<Boolean>) = lifecycleScope.launch {
+        isEmpty.collect { empty -> binding.tvEmptyList.let { if (empty) it.visible() else it.gone() } }
+    }
+
+    private fun initPhotosAdapter() {
+        photosAdapter = PhotosAdapter()
+        binding.rvPhotos.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = this@ListActivity.photosAdapter
+        }
+    }
+
+    private fun obtainViewModel(activity: Activity): ListViewModel {
+        val factory = ListViewModelFactory.createFactory(activity)
+        return ViewModelProvider(this, factory)[ListViewModel::class.java]
+    }
 }

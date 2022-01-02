@@ -1,101 +1,73 @@
 package com.nurrizkiadip.unsplashgallery.ui.detail
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.nurrizkiadip.unsplashgallery.R
-import com.nurrizkiadip.unsplashgallery.data.source.remote.EmptyResponse
-import com.nurrizkiadip.unsplashgallery.data.source.remote.ErrorResponse
-import com.nurrizkiadip.unsplashgallery.data.source.remote.LoadingResponse
-import com.nurrizkiadip.unsplashgallery.data.source.remote.SuccessResponse
+import com.nurrizkiadip.unsplashgallery.data.Photo
 import com.nurrizkiadip.unsplashgallery.databinding.ActivityDetailBinding
-import com.nurrizkiadip.unsplashgallery.ui.list.ListActivity
-import com.nurrizkiadip.unsplashgallery.ui.list.ListViewModel
 import com.nurrizkiadip.unsplashgallery.ui.list.ListViewModelFactory
-import com.nurrizkiadip.unsplashgallery.ui.list.PhotosAdapter
 import com.nurrizkiadip.unsplashgallery.utils.gone
 import com.nurrizkiadip.unsplashgallery.utils.visible
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class DetailActivity : AppCompatActivity() {
-	private lateinit var binding: ActivityDetailBinding;
-	private lateinit var viewModel: DetailViewModel
+    private lateinit var binding: ActivityDetailBinding
+    private lateinit var viewModel: DetailViewModel
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		binding = ActivityDetailBinding.inflate(layoutInflater)
-		setContentView(binding.root)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        viewModel = obtainViewModel(this)
 
-		val id = intent.getStringExtra(EXTRA_ID)
+        intent.getStringExtra(EXTRA_ID)?.let { id ->
+            viewModel.getPhotoById(this, id)
+            populatePhoto(viewModel.photo)
+            populateProgressBar(viewModel.isLoading)
+        }
+    }
 
-		viewModel = obtainViewModel(this)
+    private fun populateProgressBar(loading: MutableStateFlow<Boolean>) = lifecycleScope.launch {
+        loading.collect { isLoading -> binding.pbDetail.let { if (isLoading) it.visible() else it.gone() } }
+    }
 
-		if (id != null) {
-			getPhoto(id)
-		}
-	}
+    private fun populatePhoto(photo: MutableStateFlow<Photo>) = lifecycleScope.launch {
+        photo.collect {
+            Glide
+                .with(this@DetailActivity)
+                .load(it.regPhotoUrl)
+                .centerCrop()
+                .placeholder(R.drawable.ic_user)
+                .into(binding.imgPhotoDetail)
+            Glide
+                .with(this@DetailActivity)
+                .load(it.user.profileImageUrl)
+                .centerCrop()
+                .placeholder(R.drawable.ic_user)
+                .into(binding.userProfileImage)
 
-	private fun obtainViewModel(activity: Activity): DetailViewModel {
-		val factory = ListViewModelFactory.createFactory(activity)
-		return ViewModelProvider(this, factory).get(DetailViewModel::class.java)
-	}
+            with(binding) {
+                username.text = it.user.username
+                name.text = it.user.name
+                totalViewsPhoto.text = it.views.toString()
+                tvDescriptionContent.text = it.description
+            }
 
-	private fun getPhoto(id: String) {
-		viewModel.getPhotoById(id).observe(this) {
-			if (it !== null) {
-				when (it) {
-					is SuccessResponse -> {
-						binding.pbDetail.gone()
+        }
+    }
 
-						Glide
-							.with(this)
-							.load(it.body?.regPhotoUrl)
-							.centerCrop()
-							.placeholder(R.drawable.ic_user)
-							.into(binding.imgPhotoDetail)
-						Glide
-							.with(this)
-							.load(it.body?.user?.profileImageUrl)
-							.centerCrop()
-							.placeholder(R.drawable.ic_user)
-							.into(binding.userProfileImage)
+    private fun obtainViewModel(activity: Activity): DetailViewModel {
+        val factory = ListViewModelFactory.createFactory(activity)
+        return ViewModelProvider(this, factory).get(DetailViewModel::class.java)
+    }
 
-						binding.username.text = it.body?.user?.username
-						binding.name.text = it.body?.user?.name
-						binding.totalViewsPhoto.text = it.body?.views.toString()
-						binding.tvDescriptionContent.text = (it.body?.description ?: resources.getString(R.string.no_description)).toString()
-					}
-					is ErrorResponse -> {
-						binding.pbDetail.gone()
-						showToast(it.message as String)
-					}
-					is EmptyResponse -> {
-						binding.pbDetail.gone()
-
-						showToast(it.message as String)
-					}
-					is LoadingResponse -> {
-						binding.pbDetail.visible()
-					}
-				}
-			}
-		}
-	}
-
-	private fun showToast(msg: String) {
-		Toast.makeText(
-			this, msg, Toast.LENGTH_SHORT
-		).show()
-	}
-
-	companion object {
-		private val TAG: String = DetailActivity::class.java.simpleName
-		const val PHOTO_TYPE = "photo_type"
-		const val EXTRA_ID = "extra_id"
-		const val EXTRA_DETAIL_TYPE = "extra_detail_type"
-	}
+    companion object {
+        const val EXTRA_ID = "extra_id"
+    }
 }
