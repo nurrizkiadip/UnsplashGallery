@@ -40,20 +40,10 @@ class PhotosAdapter : RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
 		RecyclerView.ViewHolder(binding.root) {
 		fun bind(photo: Photo) {
 			with(binding) {
-				/*Glide
-						.with(itemView.context)
-						.load(photo.regPhotoUrl)
-						.centerCrop()
-						.into(this.imgPhotos)
-				Glide
-						.with(itemView.context)
-						.load(photo.user.profileImageUrl)
-						.centerCrop()
-						.into(this.profileImage)*/
-
 				this.name.text = photo.user.name
 				this.imgPhotos.load(photo.regPhotoUrl)
 				this.profileImage.load(photo.user.profileImageUrl)
+				
 				itemView.setOnClickListener {
 					val intent = Intent(itemView.context, DetailActivity::class.java)
 					intent.putExtra(DetailActivity.EXTRA_ID, photo.id)

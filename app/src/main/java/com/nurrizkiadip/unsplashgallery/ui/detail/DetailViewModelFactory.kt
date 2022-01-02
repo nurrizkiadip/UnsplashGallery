@@ -28,6 +28,7 @@ class DetailViewModelFactory(
   companion object {
     @Volatile
     private var instance: DetailViewModelFactory? = null
+
     fun createFactory(): DetailViewModelFactory {
       return instance ?: synchronized(this) {
         instance ?: DetailViewModelFactory(

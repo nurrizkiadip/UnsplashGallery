@@ -3,14 +3,13 @@ package com.nurrizkiadip.unsplashgallery.data.source.remote
 import com.nurrizkiadip.unsplashgallery.data.Photo
 import com.nurrizkiadip.unsplashgallery.data.source.remote.network.ApiConfig
 import com.nurrizkiadip.unsplashgallery.data.source.remote.network.ApiService
-import com.nurrizkiadip.unsplashgallery.data.source.remote.response.mapped
+import com.nurrizkiadip.unsplashgallery.utils.mapped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class RemoteDataSource(private val apiService: ApiService) {
-
 	suspend fun getPhotos() = flow<ApiResponse<List<Photo>>> {
 		emit(LoadingResponse())
 		val response = apiService.getPhotos()

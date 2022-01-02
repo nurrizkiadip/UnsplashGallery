@@ -36,19 +36,6 @@ class DetailActivity : AppCompatActivity() {
 
 	private fun populatePhoto(photo: MutableStateFlow<Photo>) = lifecycleScope.launch {
 		photo.collect {
-			/*Glide
-				.with(this@DetailActivity)
-				.load(it.regPhotoUrl)
-				.centerCrop()
-				.placeholder(R.drawable.ic_user)
-				.into(binding.imgPhotoDetail)
-			Glide
-				.with(this@DetailActivity)
-				.load(it.user.profileImageUrl)
-				.centerCrop()
-				.placeholder(R.drawable.ic_user)
-				.into(binding.userProfileImage)*/
-
 			binding.imgPhotoDetail.load(it.regPhotoUrl)
 			binding.userProfileImage.load(it.user.profileImageUrl)
 			with(binding) {
