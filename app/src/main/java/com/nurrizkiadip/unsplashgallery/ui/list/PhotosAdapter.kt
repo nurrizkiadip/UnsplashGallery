@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.nurrizkiadip.unsplashgallery.data.Photo
 import com.nurrizkiadip.unsplashgallery.databinding.ItemPhotoBinding
 
@@ -13,19 +14,18 @@ class PhotosAdapter : RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
 
 	fun setPhotos(listPhotos: List<Photo>?) {
 		if (listPhotos.isNullOrEmpty()) return
-
 		this.listPhotos.clear()
 		this.listPhotos.addAll(listPhotos)
 		notifyDataSetChanged()
 	}
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-		return ViewHolder(
-			ItemPhotoBinding.inflate(
-				LayoutInflater.from(parent.context), parent, false
-			)
+	override fun onCreateViewHolder(
+		parent: ViewGroup, viewType: Int
+	): ViewHolder = ViewHolder(
+		ItemPhotoBinding.inflate(
+			LayoutInflater.from(parent.context), parent, false
 		)
-	}
+	)
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		val photo = listPhotos[position]
@@ -40,9 +40,10 @@ class PhotosAdapter : RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
 			with(binding) {
 				this.name.text = photo.user.name
 				this.imgPhotos.load(photo.regPhotoUrl)
-				this.profileImage.load(photo.user.profileImageUrl)
+				this.profileImage.load(photo.user.profileImageUrl) {
+					transformations(CircleCropTransformation())
+				}
 			}
 		}
-
 	}
 }

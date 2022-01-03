@@ -2,9 +2,9 @@ package com.nurrizkiadip.unsplashgallery.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import java.lang.reflect.InvocationTargetException
 import com.nurrizkiadip.unsplashgallery.data.Repository
 import com.nurrizkiadip.unsplashgallery.di.Injection
-import java.lang.reflect.InvocationTargetException
 
 class ListViewModelFactory(
 	private val mRepository: Repository?

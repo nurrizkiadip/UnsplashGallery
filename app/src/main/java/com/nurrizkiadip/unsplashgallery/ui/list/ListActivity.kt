@@ -36,17 +36,20 @@ class ListActivity : AppCompatActivity() {
 	private fun populatePhotos(photos: MutableStateFlow<List<Photo>>) =
 		lifecycleScope.launch { photos.collect { photosAdapter.setPhotos(it) } }
 
-	private fun populateEmptyMessage(message: MutableStateFlow<String>) = lifecycleScope.launch {
-		message.collect { if (it.isNotBlank()) binding.tvEmptyList.text = it }
-	}
+	private fun populateEmptyMessage(message: MutableStateFlow<String>) =
+		lifecycleScope.launch {
+			message.collect { if (it.isNotBlank()) binding.tvEmptyList.text = it }
+		}
 
-	private fun populateLoadingView(isLoading: MutableStateFlow<Boolean>) = lifecycleScope.launch {
-		isLoading.collect { loading -> binding.pbList.let { if (loading) it.visible() else it.gone() } }
-	}
+	private fun populateLoadingView(isLoading: MutableStateFlow<Boolean>) =
+		lifecycleScope.launch {
+			isLoading.collect { loading -> binding.pbList.let { if (loading) it.visible() else it.gone() } }
+		}
 
-	private fun populateEmptyView(isEmpty: MutableStateFlow<Boolean>) = lifecycleScope.launch {
-		isEmpty.collect { empty -> binding.tvEmptyList.let { if (empty) it.visible() else it.gone() } }
-	}
+	private fun populateEmptyView(isEmpty: MutableStateFlow<Boolean>) =
+		lifecycleScope.launch {
+			isEmpty.collect { empty -> binding.tvEmptyList.let { if (empty) it.visible() else it.gone() } }
+		}
 
 	private fun initPhotosAdapter() {
 		photosAdapter = PhotosAdapter()
