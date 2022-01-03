@@ -19,18 +19,14 @@ fun List<PhotoResponse>.mapped(): MutableList<Photo> {
 	return listOfPhotos
 }
 
-fun PhotoResponse.mapped(size: Int? = 0): Photo {
+fun PhotoResponse.mapped(): Photo {
 	return Photo(
 		id = this.id,
-		description = this.description ?: "Tidak ada deskripsi gambar",
 		regPhotoUrl = this.urls?.regular ?: "",
-		views = this.views ?: 0,
 		user = User(
 			id = this.user?.id.toString(),
-			username = this.user?.username ?: "",
 			name = this.user?.name ?: "Tidak diketahui",
-			profileImageUrl = if (size == 0) this.user?.profileImage?.small ?: ""
-			else this.user?.profileImage?.medium ?: "",
+			profileImageUrl = this.user?.profileImage?.small ?: "",
 		),
 	)
 }

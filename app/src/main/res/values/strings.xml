@@ -1,16 +1,7 @@
 <resources>
   <string name="app_name">Unsplash Gallery</string>
-  <string name="thumbnail_photo">Thumnail Photo</string>
-  <string name="user_icon">User Icon</string>
   <string name="user_owner">User Owner</string>
+  <string name="thumbnail_photo">Thumnail Photo</string>
   <string name="empty_list_message">Data Not Available</string>
-  <string name="detail_photo">Detail Photo</string>
-  <string name="unknown_user">Tidak diketahui</string>
-  <string name="description">Deskripsi</string>
-  <string name="deskripsi_gambar">Deskripsi Gambar</string>
-  <string name="views_photo">Total of Views</string>
-  <string name="no_description">Tidak ada deskripsi gambar</string>
-  <string name="username">username</string>
-  <string name="user_s_name">User\'s Name</string>
   <string name="user_photo_profile">User Photo Profile</string>
 </resources>

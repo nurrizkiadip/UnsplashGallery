@@ -19,15 +19,6 @@ class RemoteDataSource(private val apiService: ApiService) {
 		emit(ErrorResponse("Cannot getting data"))
 	}.flowOn(Dispatchers.IO)
 
-	fun getPhotoById(id: String) = flow<ApiResponse<Photo>> {
-		emit(LoadingResponse())
-		val response = apiService.getPhotoById(id)
-		if (response.user != null) emit(SuccessResponse(response.mapped(1)))
-		else emit(EmptyResponse(null, "No Photo Data"))
-	}.catch {
-		emit(ErrorResponse("Cannot getting data"))
-	}.flowOn(Dispatchers.IO)
-
 	companion object {
 		@Volatile
 		private var instance: RemoteDataSource? = null

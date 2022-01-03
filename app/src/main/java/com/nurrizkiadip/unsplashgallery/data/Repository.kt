@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.Flow
 class Repository(private val remoteData: RemoteDataSource) : PhotoDataSource {
 	override suspend fun getPhotos(): Flow<ApiResponse<List<Photo>>> =
 		remoteData.getPhotos()
-	override suspend fun getPhotoById(id: String): Flow<ApiResponse<Photo>> =
-		remoteData.getPhotoById(id)
 
 	companion object {
 		@Volatile

@@ -1,13 +1,11 @@
 package com.nurrizkiadip.unsplashgallery.ui.list
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nurrizkiadip.unsplashgallery.data.Photo
 import com.nurrizkiadip.unsplashgallery.databinding.ItemPhotoBinding
-import com.nurrizkiadip.unsplashgallery.ui.detail.DetailActivity
 
 class PhotosAdapter : RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
 
@@ -43,12 +41,6 @@ class PhotosAdapter : RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
 				this.name.text = photo.user.name
 				this.imgPhotos.load(photo.regPhotoUrl)
 				this.profileImage.load(photo.user.profileImageUrl)
-				
-				itemView.setOnClickListener {
-					val intent = Intent(itemView.context, DetailActivity::class.java)
-					intent.putExtra(DetailActivity.EXTRA_ID, photo.id)
-					itemView.context.startActivity(intent)
-				}
 			}
 		}
 

@@ -11,10 +11,4 @@ interface ApiService {
 	suspend fun getPhotos(
 		@Query("client_id") clientId: String = CLIENT_ID,
 	): List<PhotoResponse>
-
-	@GET("photos/{id}")
-	suspend fun getPhotoById(
-		@Path("id") id: String,
-		@Query("client_id") clientId: String = CLIENT_ID,
-	): PhotoResponse
 }
